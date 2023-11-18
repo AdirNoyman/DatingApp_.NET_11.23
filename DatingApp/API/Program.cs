@@ -15,6 +15,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 );
 
+builder.Services.AddCors();
 
 var app = builder.Build();
 
@@ -24,6 +25,9 @@ var app = builder.Build();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+// Allow request coming form our client
+app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:4200"));
 
 app.MapControllers();
 

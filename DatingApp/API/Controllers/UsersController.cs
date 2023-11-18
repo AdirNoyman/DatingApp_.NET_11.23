@@ -19,7 +19,7 @@ namespace API.Controllers
         {
             _context = context;
         }
-
+        // Get all users
         [HttpGet] // api/users
         public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
         {
@@ -27,6 +27,7 @@ namespace API.Controllers
             return users;
         }
 
+        // Get a single user
         [HttpGet("{id}")] // api/users/3
         public async Task<ActionResult<AppUser>> GetUser(int id)
         {
