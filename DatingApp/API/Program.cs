@@ -27,7 +27,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 // Allow request coming form our client
-app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:4200"));
+app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200"));
 
 app.MapControllers();
 
