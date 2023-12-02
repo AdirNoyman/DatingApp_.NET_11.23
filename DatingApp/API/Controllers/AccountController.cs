@@ -5,8 +5,10 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using API.Data;
+using API.DTOs;
 using API.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
@@ -20,18 +22,20 @@ namespace API.Controllers
         }
 
         [HttpPost("register")] // POST to api/account/register
-        public async Task<ActionResult<AppUser>> Register(string username, string password)
+        public async Task<ActionResult<AppUser>> Register(RegisterDto registerDto)
         {
-            // // Check if username is taken
+            // Check if username is taken
             // if (await UserExists(username)) return BadRequest("Username is taken");
+
+            if (await UserExists(registerDto.Username)) return BadRequest("Username is taken 🤨");
 
             // Create new user (using will make sure that when we finish with this class it will be disposed and not take up memory)
             using var hmac = new HMACSHA512();
 
             var user = new AppUser
             {
-                UserName = username.ToLower(),
-                PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password)), // Hash the password
+                UserName = registerDto.Username.ToLower(),
+                PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)), // Hash the password
                 PasswordSalt = hmac.Key // Salt the password
             };
 
@@ -40,6 +44,12 @@ namespace API.Controllers
             await _context.SaveChangesAsync();
 
             return user;
+
+        }
+
+        private async Task<bool> UserExists(string username)
+        {
+            return await _context.Users.AnyAsync(x => x.UserName == username.ToLower());
         }
 
 
